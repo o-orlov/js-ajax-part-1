@@ -1,4 +1,5 @@
 body {
+  position: relative;
   min-width: 320px;
   margin: 0;
   padding: 30px;
@@ -7,11 +8,25 @@ body {
 }
 
 .drag-area,
+.draggable-item,
 .dropped-item {
   box-sizing: border-box;
   width: 100px;
   height: 100px;
   border: 1px solid #000;
+}
+
+.draggable-item {
+  z-index: 1;
+}
+
+.draggable-item_hidden {
+  display: none;
+}
+
+.draggable-item,
+.dropped-item_canvas {
+  position: absolute;
 }
 
 .container {
@@ -42,8 +57,4 @@ body {
 
 .drop-area_canvas {
   position: relative;
-}
-
-.dropped-item_canvas {
-  position: absolute;
 }

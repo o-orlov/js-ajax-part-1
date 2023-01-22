@@ -1,43 +1,70 @@
-const dragAreaEl = document.getElementById('drag-area');
-const dropAreaGrid = document.getElementById('drop-area_grid');
-const dropAreaCanvas = document.getElementById('drop-area_canvas');
-
 const MOUSE_PRIMARY_BUTTON = 1;
+const COORDS_OFFSET = 50;
+
+const dragAreaEl = document.getElementById('drag-area');
+const dropAreaGridEl = document.getElementById('drop-area_grid');
+const dropAreaCanvasEl = document.getElementById('drop-area_canvas');
+const draggableItemEl = document.getElementById('draggable-item');
+
+let pointerId = null;
 
 function onDocumentPointerUp(event) {
+    if (event.pointerId !== pointerId) {
+        return;
+    }
+
     console.log('onDocumentPointerUp');
+    pointerId = null;
     document.removeEventListener('pointerup', onDocumentPointerUp);
     document.removeEventListener('pointermove', onDocumentPointerMove);
-    dropAreaGrid.removeEventListener('pointerenter', onDropAreaGridPointerEnter);
-    dropAreaGrid.removeEventListener('pointerleave', onDropAreaGridPointerLeave);
-    dropAreaCanvas.removeEventListener('pointerenter', onDropAreaCanvasPointerEnter);
-    dropAreaCanvas.removeEventListener('pointerleave', onDropAreaCanvasPointerLeave);
-    setDropAreaHighlighted(dropAreaGrid, false);
-    setDropAreaHighlighted(dropAreaCanvas, false);
+    dropAreaGridEl.removeEventListener('pointerenter', onDropAreaGridPointerEnter);
+    dropAreaGridEl.removeEventListener('pointerleave', onDropAreaGridPointerLeave);
+    dropAreaCanvasEl.removeEventListener('pointerenter', onDropAreaCanvasPointerEnter);
+    dropAreaCanvasEl.removeEventListener('pointerleave', onDropAreaCanvasPointerLeave);
+
+    setDraggableItemVisible(false);
+    setDropAreaHighlighted(dropAreaGridEl, false);
+    setDropAreaHighlighted(dropAreaCanvasEl, false);
 }
 
 function onDocumentPointerMove(event) {
+    if (event.pointerId !== pointerId) {
+        return;
+    }
     console.log('onDocumentPointerMove');
+    setDraggableItemCoords(event.pageX, event.pageY);
 }
 
 function onDropAreaGridPointerEnter(event) {
+    if (event.pointerId !== pointerId) {
+        return;
+    }
     console.log('onDropAreaGridPointerEnter');
-    setDropAreaHighlighted(dropAreaGrid, true);
+    setDropAreaHighlighted(dropAreaGridEl, true);
 }
 
 function onDropAreaGridPointerLeave(event) {
+    if (event.pointerId !== pointerId) {
+        return;
+    }
     console.log('onDropAreaGridPointerLeave');
-    setDropAreaHighlighted(dropAreaGrid, false);
+    setDropAreaHighlighted(dropAreaGridEl, false);
 }
 
 function onDropAreaCanvasPointerEnter(event) {
+    if (event.pointerId !== pointerId) {
+        return;
+    }
     console.log('onDropAreaCanvasPointerEnter');
-    setDropAreaHighlighted(dropAreaCanvas, true);
+    setDropAreaHighlighted(dropAreaCanvasEl, true);
 }
 
 function onDropAreaCanvasPointerLeave(event) {
+    if (event.pointerId !== pointerId) {
+        return;
+    }
     console.log('onDropAreaCanvasPointerLeave');
-    setDropAreaHighlighted(dropAreaCanvas, false);
+    setDropAreaHighlighted(dropAreaCanvasEl, false);
 }
 
 function setDropAreaHighlighted(dropAreaEl, highlighted) {
@@ -48,18 +75,48 @@ function setDropAreaHighlighted(dropAreaEl, highlighted) {
     }
 }
 
+function getRandomColor() {
+    const color = ['#'];
+    for (let i = 0; i < 6; i++) {
+        color.push(Math.floor(Math.random() * 16).toString(16));
+    }
+    return color.join('');
+}
+
+function setDraggableItemVisible(visible) {
+    if (visible) {
+        draggableItemEl.classList.remove('draggable-item_hidden');
+    } else {
+        draggableItemEl.classList.add('draggable-item_hidden');
+    }
+}
+
+function setDraggableItemCoords(x, y) {
+    draggableItemEl.style.top = `${y - COORDS_OFFSET}px`;
+    draggableItemEl.style.left = `${x - COORDS_OFFSET}px`;
+}
+
 function onDragAreaPointerDown(event) {
+    if (pointerId !== null) {
+        return;
+    }
     // eslint-disable-next-line no-bitwise
     if (event.pointerType === 'mouse' && !(event.buttons & MOUSE_PRIMARY_BUTTON)) {
         return;
     }
+
     console.log('onDragAreaPointerDown');
+    pointerId = event.pointerId;
     document.addEventListener('pointerup', onDocumentPointerUp);
     document.addEventListener('pointermove', onDocumentPointerMove);
-    dropAreaGrid.addEventListener('pointerenter', onDropAreaGridPointerEnter);
-    dropAreaGrid.addEventListener('pointerleave', onDropAreaGridPointerLeave);
-    dropAreaCanvas.addEventListener('pointerenter', onDropAreaCanvasPointerEnter);
-    dropAreaCanvas.addEventListener('pointerleave', onDropAreaCanvasPointerLeave);
+    dropAreaGridEl.addEventListener('pointerenter', onDropAreaGridPointerEnter);
+    dropAreaGridEl.addEventListener('pointerleave', onDropAreaGridPointerLeave);
+    dropAreaCanvasEl.addEventListener('pointerenter', onDropAreaCanvasPointerEnter);
+    dropAreaCanvasEl.addEventListener('pointerleave', onDropAreaCanvasPointerLeave);
+
+    draggableItemEl.style.backgroundColor = getRandomColor();
+    setDraggableItemCoords(event.pageX, event.pageY);
+    setDraggableItemVisible(true);
 }
 
 dragAreaEl.addEventListener('pointerdown', onDragAreaPointerDown);
