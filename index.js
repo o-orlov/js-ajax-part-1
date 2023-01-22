@@ -17,10 +17,6 @@ function onDocumentPointerUp(event) {
     pointerId = null;
     document.removeEventListener('pointerup', onDocumentPointerUp);
     document.removeEventListener('pointermove', onDocumentPointerMove);
-    dropAreaGridEl.removeEventListener('pointerenter', onDropAreaGridPointerEnter);
-    dropAreaGridEl.removeEventListener('pointerleave', onDropAreaGridPointerLeave);
-    dropAreaCanvasEl.removeEventListener('pointerenter', onDropAreaCanvasPointerEnter);
-    dropAreaCanvasEl.removeEventListener('pointerleave', onDropAreaCanvasPointerLeave);
 
     setDraggableItemVisible(false);
     setDropAreaHighlighted(dropAreaGridEl, false);
@@ -31,40 +27,21 @@ function onDocumentPointerMove(event) {
     if (event.pointerId !== pointerId) {
         return;
     }
+
     console.log('onDocumentPointerMove');
     setDraggableItemCoords(event.pageX, event.pageY);
-}
 
-function onDropAreaGridPointerEnter(event) {
-    if (event.pointerId !== pointerId) {
-        return;
+    const elements = document.elementsFromPoint(event.pageX, event.pageY);
+    if (elements.includes(dropAreaGridEl)) {
+        setDropAreaHighlighted(dropAreaGridEl, true);
+        setDropAreaHighlighted(dropAreaCanvasEl, false);
+    } else if (elements.includes(dropAreaCanvasEl)) {
+        setDropAreaHighlighted(dropAreaGridEl, false);
+        setDropAreaHighlighted(dropAreaCanvasEl, true);
+    } else {
+        setDropAreaHighlighted(dropAreaGridEl, false);
+        setDropAreaHighlighted(dropAreaCanvasEl, false);
     }
-    console.log('onDropAreaGridPointerEnter');
-    setDropAreaHighlighted(dropAreaGridEl, true);
-}
-
-function onDropAreaGridPointerLeave(event) {
-    if (event.pointerId !== pointerId) {
-        return;
-    }
-    console.log('onDropAreaGridPointerLeave');
-    setDropAreaHighlighted(dropAreaGridEl, false);
-}
-
-function onDropAreaCanvasPointerEnter(event) {
-    if (event.pointerId !== pointerId) {
-        return;
-    }
-    console.log('onDropAreaCanvasPointerEnter');
-    setDropAreaHighlighted(dropAreaCanvasEl, true);
-}
-
-function onDropAreaCanvasPointerLeave(event) {
-    if (event.pointerId !== pointerId) {
-        return;
-    }
-    console.log('onDropAreaCanvasPointerLeave');
-    setDropAreaHighlighted(dropAreaCanvasEl, false);
 }
 
 function setDropAreaHighlighted(dropAreaEl, highlighted) {
@@ -109,10 +86,6 @@ function onDragAreaPointerDown(event) {
     pointerId = event.pointerId;
     document.addEventListener('pointerup', onDocumentPointerUp);
     document.addEventListener('pointermove', onDocumentPointerMove);
-    dropAreaGridEl.addEventListener('pointerenter', onDropAreaGridPointerEnter);
-    dropAreaGridEl.addEventListener('pointerleave', onDropAreaGridPointerLeave);
-    dropAreaCanvasEl.addEventListener('pointerenter', onDropAreaCanvasPointerEnter);
-    dropAreaCanvasEl.addEventListener('pointerleave', onDropAreaCanvasPointerLeave);
 
     draggableItemEl.style.backgroundColor = getRandomColor();
     setDraggableItemCoords(event.pageX, event.pageY);
