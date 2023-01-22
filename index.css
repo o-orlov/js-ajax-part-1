@@ -3,6 +3,7 @@ body {
   margin: 0;
   padding: 30px;
   background-color: #fff;
+  user-select: none;
 }
 
 .drag-area,
@@ -25,6 +26,10 @@ body {
   overflow: auto;
   border: 1px dashed #000;
   aspect-ratio: 1 / 1;
+}
+
+.drop-area_highlighted {
+  background-color: #ededed;
 }
 
 .drop-area_grid {
