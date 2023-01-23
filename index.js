@@ -14,7 +14,6 @@ function onDocumentPointerUp(event) {
         return;
     }
 
-    console.log('onDocumentPointerUp');
     pointerId = null;
     document.removeEventListener('pointerup', onDocumentPointerUp);
     document.removeEventListener('pointermove', onDocumentPointerMove);
@@ -49,6 +48,7 @@ function setDroppedItemCoordsMappedToDropAreaCanvas(droppedItemEl, dropAreaEl) {
     if (dropAreaEl !== dropAreaCanvasEl) {
         return;
     }
+
     const dropAreaRect = dropAreaEl.getBoundingClientRect();
     const top = parseInt(draggableItemEl.style.top, 10) - dropAreaRect.top - BORDER_WIDTH + dropAreaEl.scrollTop;
     const left = parseInt(draggableItemEl.style.left, 10) - dropAreaRect.left - BORDER_WIDTH + dropAreaEl.scrollLeft;
@@ -60,7 +60,7 @@ function onDocumentPointerMove(event) {
     if (event.pointerId !== pointerId) {
         return;
     }
-    console.log('onDocumentPointerMove');
+
     setDraggableItemCoords(event.pageX, event.pageY);
     updateDropAreasHighlighting();
 }
@@ -137,7 +137,6 @@ function onDragAreaPointerDown(event) {
         return;
     }
 
-    console.log('onDragAreaPointerDown');
     pointerId = event.pointerId;
     document.addEventListener('pointerup', onDocumentPointerUp);
     document.addEventListener('pointermove', onDocumentPointerMove);
