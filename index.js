@@ -1,5 +1,6 @@
 const MOUSE_PRIMARY_BUTTON = 1;
-const COORDS_OFFSET = 50;
+const DRAGGABLE_ITEM_COORDS_OFFSET = 50;
+const BORDER_WIDTH = 1;
 
 const dragAreaEl = document.getElementById('drag-area');
 const dropAreaGridEl = document.getElementById('drop-area_grid');
@@ -18,9 +19,41 @@ function onDocumentPointerUp(event) {
     document.removeEventListener('pointerup', onDocumentPointerUp);
     document.removeEventListener('pointermove', onDocumentPointerMove);
 
+    if (doesDraggableItemCollideWithDropArea(dropAreaGridEl, false)) {
+        dropDraggableItem(dropAreaGridEl);
+    } else if (doesDraggableItemCollideWithDropArea(dropAreaCanvasEl, true)) {
+        dropDraggableItem(dropAreaCanvasEl);
+    }
+
     setDraggableItemVisible(false);
     setDropAreaHighlighted(dropAreaGridEl, false);
     setDropAreaHighlighted(dropAreaCanvasEl, false);
+}
+
+function dropDraggableItem(dropAreaEl) {
+    const droppedItemEl = document.createElement('div');
+    droppedItemEl.className = 'dropped-item';
+    droppedItemEl.style.backgroundColor = draggableItemEl.style.backgroundColor;
+
+    if (dropAreaEl === dropAreaGridEl) {
+        droppedItemEl.classList.add('dropped-item_grid');
+    } else {
+        droppedItemEl.classList.add('dropped-item_canvas');
+        setDroppedItemCoordsMappedToDropAreaCanvas(droppedItemEl, dropAreaEl);
+    }
+
+    dropAreaEl.appendChild(droppedItemEl);
+}
+
+function setDroppedItemCoordsMappedToDropAreaCanvas(droppedItemEl, dropAreaEl) {
+    if (dropAreaEl !== dropAreaCanvasEl) {
+        return;
+    }
+    const dropAreaRect = dropAreaEl.getBoundingClientRect();
+    const top = parseInt(draggableItemEl.style.top, 10) - dropAreaRect.top - BORDER_WIDTH + dropAreaEl.scrollTop;
+    const left = parseInt(draggableItemEl.style.left, 10) - dropAreaRect.left - BORDER_WIDTH + dropAreaEl.scrollLeft;
+    droppedItemEl.style.top = `${top}px`;
+    droppedItemEl.style.left = `${left}px`;
 }
 
 function onDocumentPointerMove(event) {
@@ -91,8 +124,8 @@ function setDraggableItemVisible(visible) {
 }
 
 function setDraggableItemCoords(x, y) {
-    draggableItemEl.style.top = `${y - COORDS_OFFSET}px`;
-    draggableItemEl.style.left = `${x - COORDS_OFFSET}px`;
+    draggableItemEl.style.top = `${y - DRAGGABLE_ITEM_COORDS_OFFSET}px`;
+    draggableItemEl.style.left = `${x - DRAGGABLE_ITEM_COORDS_OFFSET}px`;
 }
 
 function onDragAreaPointerDown(event) {
