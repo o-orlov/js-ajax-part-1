@@ -128,6 +128,21 @@ function setDraggableItemCoords(x, y) {
     draggableItemEl.style.left = `${x - DRAGGABLE_ITEM_COORDS_OFFSET}px`;
 }
 
+function onDocumentPointerCancel(event) {
+    if (event.pointerId !== pointerId) {
+        return;
+    }
+
+    pointerId = null;
+    document.removeEventListener('pointerup', onDocumentPointerUp);
+    document.removeEventListener('pointermove', onDocumentPointerMove);
+    document.removeEventListener('pointercancel', onDocumentPointerCancel);
+
+    setDraggableItemVisible(false);
+    setDropAreaHighlighted(dropAreaGridEl, false);
+    setDropAreaHighlighted(dropAreaCanvasEl, false);
+}
+
 function onDragAreaPointerDown(event) {
     if (pointerId !== null) {
         return;
@@ -140,6 +155,7 @@ function onDragAreaPointerDown(event) {
     pointerId = event.pointerId;
     document.addEventListener('pointerup', onDocumentPointerUp);
     document.addEventListener('pointermove', onDocumentPointerMove);
+    document.addEventListener('pointercancel', onDocumentPointerCancel);
 
     draggableItemEl.style.backgroundColor = getRandomColor();
     setDraggableItemCoords(event.pageX, event.pageY);
