@@ -27,21 +27,43 @@ function onDocumentPointerMove(event) {
     if (event.pointerId !== pointerId) {
         return;
     }
-
     console.log('onDocumentPointerMove');
     setDraggableItemCoords(event.pageX, event.pageY);
+    updateDropAreasHighlighting();
+}
 
-    const elements = document.elementsFromPoint(event.pageX, event.pageY);
-    if (elements.includes(dropAreaGridEl)) {
+function updateDropAreasHighlighting() {
+    if (doesDraggableItemCollideWithDropArea(dropAreaGridEl, false)) {
         setDropAreaHighlighted(dropAreaGridEl, true);
         setDropAreaHighlighted(dropAreaCanvasEl, false);
-    } else if (elements.includes(dropAreaCanvasEl)) {
+    } else if (doesDraggableItemCollideWithDropArea(dropAreaCanvasEl, true)) {
         setDropAreaHighlighted(dropAreaGridEl, false);
         setDropAreaHighlighted(dropAreaCanvasEl, true);
     } else {
         setDropAreaHighlighted(dropAreaGridEl, false);
         setDropAreaHighlighted(dropAreaCanvasEl, false);
     }
+}
+
+function doesDraggableItemCollideWithDropArea(dropAreaEl, fully) {
+    const draggableItemRect = draggableItemEl.getBoundingClientRect();
+    const dropAreaRect = dropAreaEl.getBoundingClientRect();
+
+    if (fully) {
+        return (
+            draggableItemRect.top > dropAreaRect.top &&
+            draggableItemRect.right < dropAreaRect.right &&
+            draggableItemRect.bottom < dropAreaRect.bottom &&
+            draggableItemRect.left > dropAreaRect.left
+        );
+    }
+
+    return !(
+        draggableItemRect.top > dropAreaRect.bottom ||
+        draggableItemRect.right < dropAreaRect.left ||
+        draggableItemRect.bottom < dropAreaRect.top ||
+        draggableItemRect.left > dropAreaRect.right
+    );
 }
 
 function setDropAreaHighlighted(dropAreaEl, highlighted) {
