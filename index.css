@@ -11,9 +11,17 @@ body {
 .draggable-item,
 .dropped-item {
   box-sizing: border-box;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
   width: 100px;
   height: 100px;
   border: 1px solid #000;
+}
+
+.title {
+  text-align: center;
 }
 
 .draggable-item {
@@ -44,7 +52,7 @@ body {
 }
 
 .drop-area_highlighted {
-  background-color: #ededed;
+  background-color: #cfe8fc;
 }
 
 .drop-area_grid {
