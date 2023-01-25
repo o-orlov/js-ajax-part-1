@@ -1,6 +1,6 @@
 const MOUSE_PRIMARY_BUTTON = 1;
-const DRAGGABLE_ITEM_COORDS_OFFSET = 50;
-const BORDER_WIDTH = 1;
+const DRAGGABLE_ITEM_HALF_SIZE = 50;
+const DROP_AREA_BORDER_WIDTH = 1;
 
 const dragAreaEl = document.getElementById('drag-area');
 const dropAreaGridEl = document.getElementById('drop-area_grid');
@@ -44,14 +44,15 @@ function dropDraggableItem(dropAreaEl) {
     dropAreaEl.appendChild(droppedItemEl);
 }
 
-function setDroppedItemCoordsMappedToDropAreaCanvas(droppedItemEl, dropAreaEl) {
-    if (dropAreaEl !== dropAreaCanvasEl) {
-        return;
-    }
+function setDroppedItemCoordsMappedToDropAreaCanvas(droppedItemEl) {
+    const dropAreaRect = dropAreaCanvasEl.getBoundingClientRect();
 
-    const dropAreaRect = dropAreaEl.getBoundingClientRect();
-    const top = parseInt(draggableItemEl.style.top, 10) - dropAreaRect.top - BORDER_WIDTH + dropAreaEl.scrollTop;
-    const left = parseInt(draggableItemEl.style.left, 10) - dropAreaRect.left - BORDER_WIDTH + dropAreaEl.scrollLeft;
+    let top = parseInt(draggableItemEl.style.top, 10) - dropAreaRect.top - DROP_AREA_BORDER_WIDTH;
+    top += dropAreaCanvasEl.scrollTop - (window.pageYOffset || document.documentElement.scrollTop);
+
+    let left = parseInt(draggableItemEl.style.left, 10) - dropAreaRect.left - DROP_AREA_BORDER_WIDTH;
+    left += dropAreaCanvasEl.scrollLeft - (document.pageXOffset || document.documentElement.scrollLeft);
+
     droppedItemEl.style.top = `${top}px`;
     droppedItemEl.style.left = `${left}px`;
 }
@@ -124,8 +125,8 @@ function setDraggableItemVisible(visible) {
 }
 
 function setDraggableItemCoords(x, y) {
-    draggableItemEl.style.top = `${y - DRAGGABLE_ITEM_COORDS_OFFSET}px`;
-    draggableItemEl.style.left = `${x - DRAGGABLE_ITEM_COORDS_OFFSET}px`;
+    draggableItemEl.style.top = `${y - DRAGGABLE_ITEM_HALF_SIZE}px`;
+    draggableItemEl.style.left = `${x - DRAGGABLE_ITEM_HALF_SIZE}px`;
 }
 
 function onDocumentPointerCancel(event) {
