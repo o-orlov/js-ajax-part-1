@@ -21,8 +21,9 @@ body {
 }
 
 .title {
+  padding: 5px;
+  font: 14px Arial, sans-serif;
   text-align: center;
-  font: 16px Arial, sans-serif;
 }
 
 .draggable-item {

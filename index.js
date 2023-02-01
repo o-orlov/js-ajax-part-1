@@ -133,15 +133,7 @@ function onDocumentPointerCancel(event) {
     if (event.pointerId !== pointerId) {
         return;
     }
-
-    pointerId = null;
-    document.removeEventListener('pointerup', onDocumentPointerUp);
-    document.removeEventListener('pointermove', onDocumentPointerMove);
-    document.removeEventListener('pointercancel', onDocumentPointerCancel);
-
-    setDraggableItemVisible(false);
-    setDropAreaHighlighted(dropAreaGridEl, false);
-    setDropAreaHighlighted(dropAreaCanvasEl, false);
+    event.preventDefault();
 }
 
 function onDragAreaPointerDown(event) {
