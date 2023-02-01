@@ -17,6 +17,8 @@ function onDocumentPointerUp(event) {
     pointerId = null;
     document.removeEventListener('pointerup', onDocumentPointerUp);
     document.removeEventListener('pointermove', onDocumentPointerMove);
+    document.removeEventListener('pointercancel', onDocumentPointerCancel);
+    document.removeEventListener('scroll', onDocumentScroll);
 
     if (doesDraggableItemCollideWithDropArea(dropAreaGridEl, false)) {
         dropDraggableItem(dropAreaGridEl);
@@ -136,6 +138,10 @@ function onDocumentPointerCancel(event) {
     event.preventDefault();
 }
 
+function onDocumentScroll(event) {
+    event.preventDefault();
+}
+
 function onDragAreaPointerDown(event) {
     if (pointerId !== null) {
         return;
@@ -149,6 +155,7 @@ function onDragAreaPointerDown(event) {
     document.addEventListener('pointerup', onDocumentPointerUp);
     document.addEventListener('pointermove', onDocumentPointerMove);
     document.addEventListener('pointercancel', onDocumentPointerCancel);
+    document.addEventListener('scroll', onDocumentScroll);
 
     draggableItemEl.style.backgroundColor = getRandomColor();
     setDraggableItemCoords(event.pageX, event.pageY);
